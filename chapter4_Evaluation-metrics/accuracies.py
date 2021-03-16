@@ -293,3 +293,133 @@ sns.heatmap(cm, annot=True, cmap=cmap, cbar=False)
 plt.ylabel('Actual Labels', fontsize=20)
 plt.xlabel('Predicted Labels', fontsize=20)
 
+
+
+# ### multi-label classification
+# ### Precision at k (P@k), Average precision at k (AP@k), Mean average precision at k (MAP@k)
+
+print("\nmulti-label classification:: Precision at k (P@k), Average precision at k (AP@k)----------------")
+
+# Precision at k (P@k)
+
+def pk(y_true, y_pred, k):
+    """
+    This function calculates precision at k
+    for a single sample
+    :param y_true: list of values, actual classes
+    :param y_pred: list of values, predicted classes
+    :param k: the value for k
+    :return: precision at a given value k
+    """
+    # if k is 0, return 0. we should never have this
+    # as k is always >= 1
+    if k == 0:
+        return 0
+    # we are interested only in top-k predictions
+    y_pred = y_pred[:k]
+    # convert predictions to set
+    pred_set = set(y_pred)
+    # convert actual values to set
+    true_set = set(y_true)
+    # find common values
+    common_values = pred_set.intersection(true_set)
+    # return length of common values over k
+    return len(common_values) / len(y_pred[:k])
+
+
+# Average precision at k (AP@k)
+
+def apk(y_true, y_pred, k):
+    """
+    This function calculates average precision at k
+    for a single sample
+    :param y_true: list of values, actual classes
+    :param y_pred: list of values, predicted classes
+    :return: average precision at a given value k
+    """
+    # initialize p@k list of values
+    pk_values = []
+    # loop over all k. from 1 to k + 1
+    for i in range(1, k + 1):
+        # calculate p@i and append to list
+        pk_values.append(pk(y_true, y_pred, i))
+    # if we have no values in the list, return 0
+    if len(pk_values) == 0:
+        return 0
+    # else, we return the sum of list over length of list
+    return sum(pk_values) / len(pk_values)
+
+
+y_true = [
+		[1, 2, 3],
+		[0, 2],
+		[1],
+		[2, 3],
+		[1, 0],
+		[]
+	]
+y_pred = [
+		[0, 1, 2],
+		[1],
+		[0, 2, 3],
+		[2, 3, 4, 0],
+		[0, 1, 2],
+		[0]
+	]
+for i in range(len(y_true)):
+	for j in range(1, 4):
+		print(
+				f"""
+				y_true={y_true[i]},
+				y_pred={y_pred[i]},
+				AP@{j}={apk(y_true[i], y_pred[i], k=j)}
+				"""
+			)
+        
+
+# Mean average precision at k (MAP@k)
+
+def mapk(y_true, y_pred, k):
+    """
+    This function calculates mean avg precision at k
+    for a single sample
+    :param y_true: list of values, actual classes
+    :param y_pred: list of values, predicted classes
+    :return: mean avg precision at a given value k
+    """
+    # initialize empty list for apk values
+    apk_values = []
+    # loop over all samples
+    for i in range(len(y_true)):
+        # store apk values for every sample
+        apk_values.append(apk(y_true[i], y_pred[i], k=k))
+    
+    # return mean of apk values list
+    return sum(apk_values) / len(apk_values)
+
+
+y_true = [
+			[1, 2, 3],
+			[0, 2],
+			[1],
+			[2, 3],
+			[1, 0],
+			[]
+		]
+
+y_pred = [
+			[0, 1, 2],
+			[1],
+			[0, 2, 3],
+			[2, 3, 4, 0],
+			[0, 1, 2],
+			[0]
+		]
+
+
+print("Mean Average Precision @ k:", mapk(y_true, y_pred, k=1))
+print("Mean Average Precision @ k:", mapk(y_true, y_pred, k=2))
+print("Mean Average Precision @ k:", mapk(y_true, y_pred, k=3))
+print("Mean Average Precision @ k:", mapk(y_true, y_pred, k=4))
+
+
