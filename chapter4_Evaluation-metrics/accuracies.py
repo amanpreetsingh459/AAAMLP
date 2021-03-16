@@ -262,3 +262,17 @@ plt.xlabel('FPR', fontsize=15)
 plt.ylabel('TPR', fontsize=15)
 plt.show()
 
+
+# ### multi-class precision, and f1-score calculation using sklearn
+from sklearn import metrics
+y_true = [0, 1, 2, 0, 1, 2, 0, 2, 2]
+y_pred = [0, 2, 1, 0, 2, 1, 0, 0, 2]
+
+print("Multi-class precision with macro average:", metrics.precision_score(y_true, y_pred, average="macro"))
+print("Multi-class precision with micro average:", metrics.precision_score(y_true, y_pred, average="micro"))
+print("Multi-class precision with weighted average:", metrics.precision_score(y_true, y_pred, average="weighted"))
+
+print("Multi-class f1-score with weighted average:", metrics.f1_score(y_true, y_pred, average="weighted"))
+
+
+
