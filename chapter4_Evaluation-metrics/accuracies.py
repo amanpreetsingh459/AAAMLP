@@ -3,15 +3,8 @@
 
 # ## Accuracy implementation (simplest)
 
-# In[1]:
-
-
 l1 = [0,1,1,1,0,0,0,1]    #true targets
 l2 = [0,1,0,1,0,1,0,0]    #predicted targets
-
-
-# In[2]:
-
 
 def accuracy(y_true, y_pred):
     """
@@ -32,26 +25,16 @@ def accuracy(y_true, y_pred):
     # which is correct predictions over the number of samples
     return correct_counter / len(y_true)
 
-
-# In[3]:
-
-
-print(accuracy(l1, l2))
+print("Accuracy V1:", accuracy(l1, l2))
 
 
 # ## accuracy using scikit-learn
 
-# In[4]:
-
-
 from sklearn import metrics
-print(metrics.accuracy_score(l1, l2))
+print("Accuracy using sklearn:", metrics.accuracy_score(l1, l2))
 
 
 # ## accuracy calculation with True positive, True negative, False positive, False negative
-
-# In[5]:
-
 
 def true_positive(y_true, y_pred):
     """
@@ -66,9 +49,6 @@ def true_positive(y_true, y_pred):
         if yt == 1 and yp == 1:
             tp += 1
     return tp
-
-
-# In[6]:
 
 
 def true_negative(y_true, y_pred):
@@ -86,9 +66,6 @@ def true_negative(y_true, y_pred):
     return tn
 
 
-# In[7]:
-
-
 def false_positive(y_true, y_pred):
     """
     Function to calculate False Positives
@@ -102,10 +79,6 @@ def false_positive(y_true, y_pred):
         if yt == 0 and yp == 1:
             fp += 1
     return fp
-
-
-# In[8]:
-
 
 def false_negative(y_true, y_pred):
     """
@@ -122,34 +95,15 @@ def false_negative(y_true, y_pred):
     return fn
 
 
-# In[9]:
+print("Number of true positive:", true_positive(l1, l2))
 
+print("Number of false positive:", false_positive(l1, l2))
 
-print(true_positive(l1, l2))
+print("Number of false negative:", false_negative(l1, l2))
 
-
-# In[10]:
-
-
-print(false_positive(l1, l2))
-
-
-# In[11]:
-
-
-print(false_negative(l1, l2))
-
-
-# In[12]:
-
-
-print(true_negative(l1, l2))
-
+print("Number of true negative:", true_negative(l1, l2))
 
 # ### Accuracy Score = (TP + TN) / (TP + TN + FP + FN)
-
-# In[13]:
-
 
 def accuracy_v2(y_true, y_pred):
     """
@@ -166,28 +120,14 @@ def accuracy_v2(y_true, y_pred):
     return accuracy_score
 
 
-# In[14]:
+print("Accuracy V2:", accuracy_v2(l1, l2))
 
+print("Accuracy V1:", accuracy(l1, l2))
 
-print(accuracy_v2(l1, l2))
-
-
-# In[15]:
-
-
-print(accuracy(l1, l2))
-
-
-# In[16]:
-
-
-print(metrics.accuracy_score(l1, l2))
+print("Accuracy using sklearn:", metrics.accuracy_score(l1, l2))
 
 
 # ## Bingo!!!
-
-# In[ ]:
-
 
 
 
