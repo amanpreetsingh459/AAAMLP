@@ -181,3 +181,84 @@ from sklearn import metrics
 print("F1 score through sklearn:", metrics.f1_score(l1, l2))      #0.5714285714285715
 
 
+# ###TPR(True Positive Rate) = TP / (TP + FN)
+# ###True Positive Rate==recall==sensitivity
+
+def tpr(y_true, y_pred):
+    """
+    Function to calculate tpr
+    :param y_true: list of true values
+    :param y_pred: list of predicted values
+    :return: tpr/recall
+    """
+    return recall(y_true, y_pred)
+
+
+# ###FPR(False Positive Rate) = FP / (TN + FP)
+# ###(1 - FPR) = specificity == True Negative Rate(TNR)
+
+def fpr(y_true, y_pred):
+    """
+    Function to calculate fpr
+    :param y_true: list of true values
+    :param y_pred: list of predicted values
+    :return: fpr
+    """
+    fp = false_positive(y_true, y_pred)
+    tn = true_negative(y_true, y_pred)
+    return fp / (tn + fp)
+
+
+# ### (Area Under ROC Curve) = (Area Under Curve) = AUC
+
+l3 = [0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1]
+l4 = [0.1, 0.3, 0.2, 0.6, 0.8, 0.05,
+		0.9, 0.5, 0.3, 0.66, 0.3, 0.2,
+		0.85, 0.15, 0.99]
+
+from sklearn import metrics
+print("AUC:", metrics.roc_auc_score(l3, l4))
+
+
+# ###selecting best threshold value using ROC curve
+
+# empty lists to store true positive and false positive values
+tpr_list = []
+fpr_list = []
+
+# actual targets
+y_true = [0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1]
+
+# predicted probabilities of a sample being 1
+y_pred = [0.1, 0.3, 0.2, 0.6, 0.8, 0.05, 0.9, 0.5, 0.3, 0.66, 0.3, 0.2, 0.85, 0.15, 0.99]
+
+# some handmade thresholds
+thresholds = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.99, 1.0]
+
+# loop over all thresholds
+for thresh in thresholds:
+    # calculate predictions for a given threshold
+    temp_pred = [1 if x >= thresh else 0 for x in y_pred]
+    # calculate tpr
+    temp_tpr = tpr(y_true, temp_pred)
+    # calculate fpr
+    temp_fpr = fpr(y_true, temp_pred)
+    # append tpr and fpr to lists
+    tpr_list.append(temp_tpr)
+    fpr_list.append(temp_fpr)
+
+print("Threshold list:", thresholds)
+print("TPR list:", tpr_list)
+print("FPR list:", fpr_list)
+
+import matplotlib
+import matplotlib.pyplot as plt
+plt.figure(figsize=(7, 7))
+plt.fill_between(fpr_list, tpr_list, alpha=0.4)
+plt.plot(fpr_list, tpr_list, lw=3)
+plt.xlim(0, 1.0)
+plt.ylim(0, 1.0)
+plt.xlabel('FPR', fontsize=15)
+plt.ylabel('TPR', fontsize=15)
+plt.show()
+
