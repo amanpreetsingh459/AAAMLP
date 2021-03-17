@@ -8,6 +8,8 @@ from sklearn import tree
 import os
 import config
 
+import argparse
+
 def run(fold):
     # read the training data with folds
     df = pd.read_csv(config.TRAINING_FILE)
@@ -49,8 +51,18 @@ def run(fold):
             )
     
 if __name__ == "__main__":
-    run(fold=0)
-    run(fold=1)
-    run(fold=2)
-    run(fold=3)
-    run(fold=4)
+    # initialize ArgumentParser class of argparse
+    parser = argparse.ArgumentParser()
+    
+    # add the different arguments you need and their type
+    # currently, we only need fold
+    parser.add_argument(
+    "--fold",
+    type=int
+    )
+    
+    # read the arguments from the command line
+    args = parser.parse_args()
+    
+    # run the fold specified by command line arguments
+    run(fold=args.fold)
