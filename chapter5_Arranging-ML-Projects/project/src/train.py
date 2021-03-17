@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import os
+import argparse
+
 import joblib
 import pandas as pd
 from sklearn import metrics
 from sklearn import tree
 
-import os
 import config
+import model_dispatcher
 
-import argparse
-
-def run(fold):
+def run(fold, model):
     # read the training data with folds
     df = pd.read_csv(config.TRAINING_FILE)
     
@@ -31,10 +32,10 @@ def run(fold):
     x_valid = df_valid.drop("label", axis=1).values
     y_valid = df_valid.label.values
     
-    # initialize simple decision tree classifier from sklearn
-    clf = tree.DecisionTreeClassifier()
+    # fetch the model from model_dispatcher
+    clf = model_dispatcher.models[model]
     
-    # fir the model on training data
+    # fit the model on training data
     clf.fit(x_train, y_train)
     
     # create predictions for validation samples
@@ -46,23 +47,24 @@ def run(fold):
     
     # save the model
     joblib.dump(
-            clf,
-            os.path.join(config.MODEL_OUTPUT, f"dt_{fold}.bin")
-            )
-    
+    clf,
+    os.path.join(config.MODEL_OUTPUT, f"dt_{fold}.bin")
+    )
+
 if __name__ == "__main__":
-    # initialize ArgumentParser class of argparse
     parser = argparse.ArgumentParser()
     
-    # add the different arguments you need and their type
-    # currently, we only need fold
     parser.add_argument(
-    "--fold",
-    type=int
-    )
+                        "--fold",
+                        type=int
+                        )
+    parser.add_argument(
+                        "--model",
+                        type=str
+                        )
     
-    # read the arguments from the command line
     args = parser.parse_args()
-    
-    # run the fold specified by command line arguments
-    run(fold=args.fold)
+    run(
+        fold=args.fold,
+        model=args.model
+    )
