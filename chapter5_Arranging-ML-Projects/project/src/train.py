@@ -5,9 +5,12 @@ import pandas as pd
 from sklearn import metrics
 from sklearn import tree
 
+import os
+import config
+
 def run(fold):
     # read the training data with folds
-    df = pd.read_csv("../input/mnist_train_folds.csv")
+    df = pd.read_csv(config.TRAINING_FILE)
     
     # training data is where kfold is not equal to provided fold
     # also, note that we reset the index
@@ -29,7 +32,7 @@ def run(fold):
     # initialize simple decision tree classifier from sklearn
     clf = tree.DecisionTreeClassifier()
     
-    # fit the model on training data
+    # fir the model on training data
     clf.fit(x_train, y_train)
     
     # create predictions for validation samples
@@ -40,7 +43,10 @@ def run(fold):
     print(f"Fold={fold}, Accuracy={accuracy}")
     
     # save the model
-    joblib.dump(clf, f"../models/dt_{fold}.bin")
+    joblib.dump(
+            clf,
+            os.path.join(config.MODEL_OUTPUT, f"dt_{fold}.bin")
+            )
     
 if __name__ == "__main__":
     run(fold=0)
